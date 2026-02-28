@@ -32,6 +32,191 @@ Each sprint represents a **phase of complexity** applied to all 4 classes simult
 
 ---
 
+## Folder Structure
+
+> All members work within this structure. `frontend/` = React app. `backend/` = Node/Express app. Every file you create belongs somewhere here — if it doesn't fit, discuss with the team before inventing new folders.
+
+```
+payoncebro/
+│
+├── frontend/                                   # React (Vite) — Member A owns pages/user, B owns pages/rider, etc.
+│   └── src/
+│       ├── assets/                             # Images, icons, static files
+│       │
+│       ├── components/                         # Reusable UI components (never full pages)
+│       │   ├── common/                         # Shared across all roles
+│       │   │   ├── ProtectedRoute.jsx          # Auth + role guard wrapper (Member D)
+│       │   │   ├── StarRating.jsx              # 1–5 star input widget (Member B)
+│       │   │   └── Spinner.jsx                 # Loading indicator
+│       │   ├── user/                           # Member A
+│       │   │   ├── SearchBar.jsx
+│       │   │   ├── FoodCard.jsx
+│       │   │   ├── CartItem.jsx
+│       │   │   ├── CartSummary.jsx
+│       │   │   ├── ClusterBanner.jsx
+│       │   │   ├── ETADisplay.jsx
+│       │   │   ├── DeliveryFeeSummary.jsx
+│       │   │   ├── StatusTimeline.jsx
+│       │   │   ├── RatingModal.jsx
+│       │   │   ├── RecommendationCarousel.jsx
+│       │   │   ├── ComboResult.jsx
+│       │   │   └── VibeCheckCard.jsx           # Placeholder in Sprint 2, populated Sprint 4
+│       │   ├── rider/                          # Member B
+│       │   │   ├── AssignmentCard.jsx
+│       │   │   ├── EarningsSummary.jsx
+│       │   │   ├── StopList.jsx
+│       │   │   ├── NavigationButton.jsx
+│       │   │   ├── StatusButtons.jsx
+│       │   │   ├── RatingDisplay.jsx
+│       │   │   ├── LocationTracker.jsx
+│       │   │   └── DemandNotification.jsx
+│       │   ├── restaurant/                     # Member C
+│       │   │   ├── OrderCard.jsx
+│       │   │   ├── OrderList.jsx
+│       │   │   ├── OrderActionButtons.jsx
+│       │   │   ├── PrepTimer.jsx
+│       │   │   ├── MenuItemCard.jsx
+│       │   │   ├── MenuItemForm.jsx
+│       │   │   ├── DeleteConfirmModal.jsx
+│       │   │   ├── AiTagBadge.jsx
+│       │   │   ├── ReviewList.jsx
+│       │   │   └── ReviewResponseForm.jsx
+│       │   └── admin/                          # Member D
+│       │       ├── StatCard.jsx
+│       │       ├── RevenueChart.jsx
+│       │       └── DemandHeatmap.jsx
+│       │
+│       ├── pages/                              # Full route-level pages (one per route)
+│       │   ├── auth/                           # Member D
+│       │   │   ├── Login.jsx
+│       │   │   └── Register.jsx
+│       │   ├── user/                           # Member A
+│       │   │   ├── Home.jsx
+│       │   │   ├── Search.jsx
+│       │   │   ├── RestaurantProfile.jsx
+│       │   │   ├── Cart.jsx
+│       │   │   ├── OrderConfirmation.jsx
+│       │   │   ├── OrderTracking.jsx
+│       │   │   └── ComboBuilder.jsx
+│       │   ├── rider/                          # Member B
+│       │   │   ├── Dashboard.jsx
+│       │   │   └── RouteView.jsx
+│       │   ├── restaurant/                     # Member C
+│       │   │   ├── Dashboard.jsx
+│       │   │   └── MenuManagement.jsx
+│       │   └── admin/                          # Member D
+│       │       └── Analytics.jsx
+│       │
+│       ├── layouts/                            # Persistent nav/sidebar shells per role
+│       │   ├── UserLayout.jsx                  # Member A
+│       │   ├── RiderLayout.jsx                 # Member B
+│       │   ├── RestaurantLayout.jsx            # Member C
+│       │   └── AdminLayout.jsx                 # Member D
+│       │
+│       ├── context/                            # Global React state (Member D creates, all consume)
+│       │   ├── AuthContext.jsx                 # JWT, user object, role — Member D
+│       │   └── CartContext.jsx                 # Cart items, cluster status, totals — Member A
+│       │
+│       ├── hooks/                              # Custom React hooks (one concern per hook)
+│       │   ├── useOrderTracking.js             # Supabase realtime on orders — Member A
+│       │   ├── useRiderAssignment.js           # Supabase realtime on rider assignments — Member B
+│       │   ├── useRiderLocation.js             # Geolocation + polling — Member B
+│       │   ├── useRiderNotifications.js        # Supabase realtime on notifications — Member B
+│       │   ├── useRestaurantOrders.js          # Supabase realtime on restaurant orders — Member C
+│       │   └── useRealtimeSubscription.js      # Generic reusable realtime hook — Member D
+│       │
+│       ├── services/                           # Axios API call functions (talk to backend)
+│       │   ├── api.js                          # Base axios instance + JWT interceptor — Member D
+│       │   ├── authService.js                  # register, login, getMe — Member D
+│       │   ├── searchService.js                # search, getRestaurant — Member A
+│       │   ├── orderService.js                 # placeOrder, getOrder, getMyOrders — Member A
+│       │   ├── aiService.js                    # buildCombo, getRecommendations — Member A
+│       │   ├── deliveryService.js              # getFee, getETA — Member A
+│       │   ├── riderService.js                 # getAssignments, getEarnings, updateLocation — Member B
+│       │   ├── ratingService.js                # submitRating, submitResponse — Member B
+│       │   └── menuService.js                  # getMenu, createItem, updateItem, deleteItem — Member C
+│       │
+│       ├── utils/                              # Pure helper functions (no API calls, no state)
+│       │   └── formatCurrency.js               # e.g. formatTk(120) → "৳120"
+│       │
+│       ├── App.jsx                             # Route definitions — Member D sets up, all add routes
+│       └── main.jsx                            # Vite entry point
+│
+├── backend/                                    # Node.js + Express — MVC pattern
+│   │
+│   ├── config/                                 # External client initialisation (Member D)
+│   │   ├── db.js                               # Supabase client
+│   │   └── gemini.js                           # Gemini API client
+│   │
+│   ├── models/                                 # DATA LAYER — raw Supabase queries only, no logic
+│   │   ├── userModel.js                        # findByEmail, create — Member D
+│   │   ├── riderModel.js                       # getAvailable, setAvailable, updateLocation — Member B
+│   │   ├── restaurantModel.js                  # getById, getAll, getByIds, getByOwner — Member C
+│   │   ├── menuModel.js                        # searchItems, getByRestaurant, create, update, delete, updateTags — Member C
+│   │   ├── orderModel.js                       # create, createItems, getById, updateStatus, getByUser — Member D
+│   │   ├── clusterModel.js                     # create, getByOrder, assignRider — Member D
+│   │   ├── ratingModel.js                      # create, updateRiderAvg, updateRestaurantAvg, addResponse — Member B
+│   │   ├── notificationModel.js                # create, createAdminAlert, markRead — Member D
+│   │   └── addressModel.js                     # create, getByUser, setDefault — Member A
+│   │
+│   ├── services/                               # BUSINESS LOGIC — algorithms, AI calls, calculations
+│   │   ├── clusteringService.js                # evaluateCluster, sortByProximity, getNearbyClusteredRestaurants — Member D
+│   │   ├── routeService.js                     # optimizeRoute (nearest neighbour) — Member D
+│   │   ├── deliveryFeeService.js               # calculate (cluster vs non-cluster) — Member D
+│   │   ├── estimationService.js                # estimateTime (prep + travel + buffer) — Member D
+│   │   ├── riderAssignmentService.js           # findBestRider (nearest available) — Member D
+│   │   ├── demandService.js                    # analyzeZones (background job) — Member D
+│   │   ├── recommendationService.js            # getRecommendations (popular, together, cluster) — Member D
+│   │   ├── analyticsService.js                 # getAnalytics (aggregation queries) — Member D
+│   │   └── geminiService.js                    # generateMenuTags, generateVibeSummary, buildCombo — Member D
+│   │
+│   ├── controllers/                            # REQUEST HANDLERS — validate input, call services/models, send response
+│   │   ├── authController.js                   # register, login, getMe — Member D
+│   │   ├── searchController.js                 # search — Member A
+│   │   ├── orderController.js                  # placeOrder, getById, getByUser, updateStatus — Member D
+│   │   ├── clusterController.js                # checkCluster — Member D
+│   │   ├── deliveryController.js               # calculateFee, estimateTime — Member D
+│   │   ├── riderController.js                  # getAssignments, getEarnings, updateLocation, getRoute — Member B
+│   │   ├── restaurantController.js             # getById, getAll, getOrders, getVibeSummary — Member C
+│   │   ├── menuController.js                   # getByRestaurant, create, update, delete, toggleAvailability — Member C
+│   │   ├── ratingController.js                 # create, addResponse — Member B
+│   │   ├── aiController.js                     # buildCombo — Member D
+│   │   ├── recommendationController.js         # getRecommendations — Member D
+│   │   └── adminController.js                  # getAnalytics, getDemandZones — Member D
+│   │
+│   ├── routes/                                 # URL → controller mapping (one file per domain)
+│   │   ├── authRoutes.js                       # Member D
+│   │   ├── searchRoutes.js                     # Member A
+│   │   ├── orderRoutes.js                      # Member D
+│   │   ├── clusterRoutes.js                    # Member D
+│   │   ├── deliveryRoutes.js                   # Member D
+│   │   ├── riderRoutes.js                      # Member B
+│   │   ├── restaurantRoutes.js                 # Member C
+│   │   ├── menuRoutes.js                       # Member C
+│   │   ├── ratingRoutes.js                     # Member B
+│   │   ├── aiRoutes.js                         # Member D
+│   │   ├── recommendationRoutes.js             # Member D
+│   │   └── adminRoutes.js                      # Member D
+│   │
+│   ├── middleware/                             # Express middleware (Member D creates, all use)
+│   │   ├── authMiddleware.js                   # protect — verifies JWT, attaches req.user
+│   │   ├── roleMiddleware.js                   # restrictTo('rider') — role-based access
+│   │   └── errorMiddleware.js                  # global error handler
+│   │
+│   ├── utils/                                  # Pure backend helpers (no DB, no API calls)
+│   │   └── geoUtils.js                         # haversineDistance — Member D
+│   │
+│   └── app.js                                  # Express init, middleware stack, route mounting — Member D
+│
+├── .env                                        # Never commit — Member D shares values privately
+├── .gitignore
+└── package.json
+```
+
+> **Rule:** Models contain only DB queries. Services contain only logic. Controllers contain only request/response handling. If you find yourself writing a Supabase query inside a controller, move it to the model. If you find yourself writing a `for` loop or algorithm inside a controller, move it to a service.
+
+---
+
 ## Database Schema (Create Before Sprint 1 — All Members)
 
 > Member D sets up the Supabase project and shares credentials with the team. All members create their tables in the same instance.
@@ -103,7 +288,7 @@ npm install express dotenv cors helmet morgan bcryptjs jsonwebtoken @supabase/su
 
 # Frontend
 npm create vite@latest frontend -- --template react
-cd frontend && npm install
+cd frontend && npm install axios react-router-dom
 ```
 4. All members create their feature branches: `feature/user`, `feature/rider`, `feature/restaurant`, `feature/ai-admin`.
 5. Member D creates and merges `backend/app.js`, `backend/config/db.js`, `backend/config/gemini.js`, `backend/middleware/errorMiddleware.js`, and `frontend/src/services/api.js` into `main` before anyone else branches off.
