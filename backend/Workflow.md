@@ -102,13 +102,13 @@ npm init -y
 npm install express dotenv cors helmet morgan bcryptjs jsonwebtoken @supabase/supabase-js
 
 # Frontend
-npm create vite@latest client -- --template react
-cd client && npm install axios react-router-dom
+npm create vite@latest frontend -- --template react
+cd frontend && npm install
 ```
 4. All members create their feature branches: `feature/user`, `feature/rider`, `feature/restaurant`, `feature/ai-admin`.
-5. Member D creates and merges `server/app.js`, `server/config/db.js`, `server/config/gemini.js`, `server/middleware/errorMiddleware.js`, and `client/src/services/api.js` into `main` before anyone else branches off.
+5. Member D creates and merges `backend/app.js`, `backend/config/db.js`, `backend/config/gemini.js`, `backend/middleware/errorMiddleware.js`, and `frontend/src/services/api.js` into `main` before anyone else branches off.
 
-### `server/app.js`
+### `backend/app.js`
 ```js
 import express from 'express';
 import cors from 'cors';
@@ -127,7 +127,7 @@ app.use(errorHandler);
 export default app;
 ```
 
-### `client/src/services/api.js`
+### `frontend/src/services/api.js`
 ```js
 import axios from 'axios';
 const api = axios.create({ baseURL: 'http://localhost:5000/api' });
@@ -165,15 +165,15 @@ Register, login, JWT issue, role detection. Member D builds this entirely. Other
 
 ### Files (Member D)
 ```
-server/models/userModel.js
-server/controllers/authController.js
-server/routes/authRoutes.js
-server/middleware/authMiddleware.js
-server/middleware/roleMiddleware.js
-client/src/context/AuthContext.jsx
-client/src/pages/auth/Login.jsx
-client/src/pages/auth/Register.jsx
-client/src/components/common/ProtectedRoute.jsx
+backend/models/userModel.js
+backend/controllers/authController.js
+backend/routes/authRoutes.js
+backend/middleware/authMiddleware.js
+backend/middleware/roleMiddleware.js
+frontend/src/context/AuthContext.jsx
+frontend/src/pages/auth/Login.jsx
+frontend/src/pages/auth/Register.jsx
+frontend/src/components/common/ProtectedRoute.jsx
 ```
 
 ### API Endpoints
@@ -199,11 +199,11 @@ Empty User dashboard with nav and placeholder sections. Routing works. Auth-prot
 
 ### Files
 ```
-client/src/pages/user/Home.jsx
-client/src/pages/user/Search.jsx
-client/src/pages/user/Cart.jsx
-client/src/pages/user/OrderTracking.jsx
-client/src/components/layouts/UserLayout.jsx
+frontend/src/pages/user/Home.jsx
+frontend/src/pages/user/Search.jsx
+frontend/src/pages/user/Cart.jsx
+frontend/src/pages/user/OrderTracking.jsx
+frontend/src/components/layouts/UserLayout.jsx
 ```
 
 ### What to Build
@@ -225,9 +225,9 @@ Empty Rider dashboard shell. Routing works. Auth-protected.
 
 ### Files
 ```
-client/src/pages/rider/Dashboard.jsx
-client/src/pages/rider/RouteView.jsx
-client/src/components/layouts/RiderLayout.jsx
+frontend/src/pages/rider/Dashboard.jsx
+frontend/src/pages/rider/RouteView.jsx
+frontend/src/components/layouts/RiderLayout.jsx
 ```
 
 ### What to Build
@@ -249,9 +249,9 @@ Empty Restaurant dashboard shell. Routing works. Auth-protected.
 
 ### Files
 ```
-client/src/pages/restaurant/Dashboard.jsx
-client/src/pages/restaurant/MenuManagement.jsx
-client/src/components/layouts/RestaurantLayout.jsx
+frontend/src/pages/restaurant/Dashboard.jsx
+frontend/src/pages/restaurant/MenuManagement.jsx
+frontend/src/components/layouts/RestaurantLayout.jsx
 ```
 
 ### What to Build
@@ -271,18 +271,18 @@ Beyond auth: set up all shared backend services as empty scaffolds with correct 
 
 ### Files
 ```
-server/utils/geoUtils.js
-server/services/clusteringService.js     ← evaluateCluster, sortByProximity, getNearbyClusteredRestaurants
-server/services/deliveryFeeService.js    ← calculate
-server/services/estimationService.js     ← estimateTime
-server/services/routeService.js          ← optimizeRoute
-server/services/riderAssignmentService.js ← findBestRider
-server/services/geminiService.js         ← generateMenuTags, generateVibeSummary, buildCombo
-server/services/recommendationService.js ← getRecommendations
-server/services/analyticsService.js      ← getAnalytics
-server/services/demandService.js         ← analyzeZones
-client/src/pages/admin/Analytics.jsx
-client/src/components/layouts/AdminLayout.jsx
+backend/utils/geoUtils.js
+backend/services/clusteringService.js     ← evaluateCluster, sortByProximity, getNearbyClusteredRestaurants
+backend/services/deliveryFeeService.js    ← calculate
+backend/services/estimationService.js     ← estimateTime
+backend/services/routeService.js          ← optimizeRoute
+backend/services/riderAssignmentService.js ← findBestRider
+backend/services/geminiService.js         ← generateMenuTags, generateVibeSummary, buildCombo
+backend/services/recommendationService.js ← getRecommendations
+backend/services/analyticsService.js      ← getAnalytics
+backend/services/demandService.js         ← analyzeZones
+frontend/src/pages/admin/Analytics.jsx
+frontend/src/components/layouts/AdminLayout.jsx
 ```
 
 ### `geoUtils.js` — Haversine (implement fully in Sprint 1)
@@ -347,12 +347,12 @@ Users can search for food by name, filter by price and cuisine, and see results 
 
 ### Files (Member A)
 ```
-server/models/menuModel.js               ← searchItems(query, filters)
-server/controllers/searchController.js
-server/routes/searchRoutes.js
-client/src/services/searchService.js
-client/src/components/user/SearchBar.jsx
-client/src/components/user/FoodCard.jsx
+backend/models/menuModel.js               ← searchItems(query, filters)
+backend/controllers/searchController.js
+backend/routes/searchRoutes.js
+frontend/src/services/searchService.js
+frontend/src/components/user/SearchBar.jsx
+frontend/src/components/user/FoodCard.jsx
 ```
 > Call `clusteringService.sortByProximity` from Member D — do not rewrite it.
 
@@ -382,9 +382,9 @@ Clicking a restaurant in search results shows its full menu, average rating, and
 
 ### Files (Member A)
 ```
-client/src/pages/user/RestaurantProfile.jsx
-client/src/components/user/MenuSection.jsx
-client/src/components/user/VibeCheckCard.jsx    ← placeholder for now
+frontend/src/pages/user/RestaurantProfile.jsx
+frontend/src/components/user/MenuSection.jsx
+frontend/src/components/user/VibeCheckCard.jsx    ← placeholder for now
 ```
 
 ### API Endpoints
@@ -416,13 +416,13 @@ Rider sees their currently assigned order(s), pickup locations, customer address
 
 ### Files (Member B)
 ```
-server/models/riderModel.js              ← getAssignments(riderId), getEarnings(riderId)
-server/controllers/riderController.js
-server/routes/riderRoutes.js
-client/src/services/riderService.js
-client/src/hooks/useRiderAssignment.js   ← Supabase realtime subscription
-client/src/components/rider/AssignmentCard.jsx
-client/src/components/rider/EarningsSummary.jsx
+backend/models/riderModel.js              ← getAssignments(riderId), getEarnings(riderId)
+backend/controllers/riderController.js
+backend/routes/riderRoutes.js
+frontend/src/services/riderService.js
+frontend/src/hooks/useRiderAssignment.js   ← Supabase realtime subscription
+frontend/src/components/rider/AssignmentCard.jsx
+frontend/src/components/rider/EarningsSummary.jsx
 ```
 
 ### API Endpoints
@@ -454,10 +454,10 @@ Rider sees their optimized pickup route: ordered stop list with distances and a 
 
 ### Files (Member B)
 ```
-server/controllers/riderController.js    ← add getRoute method
-client/src/pages/rider/RouteView.jsx
-client/src/components/rider/StopList.jsx
-client/src/components/rider/NavigationButton.jsx
+backend/controllers/riderController.js    ← add getRoute method
+frontend/src/pages/rider/RouteView.jsx
+frontend/src/components/rider/StopList.jsx
+frontend/src/components/rider/NavigationButton.jsx
 ```
 > Call `routeService.optimizeRoute` from Member D — do not rewrite it.
 
@@ -488,9 +488,9 @@ Build the backend endpoint that serves a restaurant's public profile and full me
 
 ### Files (Member C)
 ```
-server/models/restaurantModel.js         ← getById, getAll, getByOwner
-server/controllers/restaurantController.js
-server/routes/restaurantRoutes.js
+backend/models/restaurantModel.js         ← getById, getAll, getByOwner
+backend/controllers/restaurantController.js
+backend/routes/restaurantRoutes.js
 ```
 
 ### API Endpoints
@@ -522,10 +522,10 @@ Restaurant owner sees incoming and active orders on their dashboard. Read-only v
 
 ### Files (Member C)
 ```
-server/controllers/restaurantController.js  ← add getOrders method
-client/src/hooks/useRestaurantOrders.js      ← Supabase realtime subscription
-client/src/components/restaurant/OrderCard.jsx
-client/src/components/restaurant/OrderList.jsx
+backend/controllers/restaurantController.js  ← add getOrders method
+frontend/src/hooks/useRestaurantOrders.js      ← Supabase realtime subscription
+frontend/src/components/restaurant/OrderCard.jsx
+frontend/src/components/restaurant/OrderList.jsx
 ```
 
 ### API Endpoints
@@ -552,10 +552,10 @@ Restaurant owner can view their full menu list. Edit/Add/Delete comes in Sprint 
 
 ### Files (Member C)
 ```
-server/models/menuModel.js               ← getByRestaurant(restaurantId)
-server/controllers/menuController.js
-server/routes/menuRoutes.js
-client/src/components/restaurant/MenuItemCard.jsx
+backend/models/menuModel.js               ← getByRestaurant(restaurantId)
+backend/controllers/menuController.js
+backend/routes/menuRoutes.js
+frontend/src/components/restaurant/MenuItemCard.jsx
 ```
 
 ### API Endpoints
@@ -581,10 +581,10 @@ Expose the clustering logic as an API endpoint so Member A's cart can call it.
 
 ### Files (Member D)
 ```
-server/models/restaurantModel.js         ← getByIds(ids)
-server/controllers/clusterController.js
-server/routes/clusterRoutes.js
-server/services/clusteringService.js     ← implement evaluateCluster fully
+backend/models/restaurantModel.js         ← getByIds(ids)
+backend/controllers/clusterController.js
+backend/routes/clusterRoutes.js
+backend/services/clusteringService.js     ← implement evaluateCluster fully
 ```
 
 ### `clusteringService.evaluateCluster`
@@ -636,10 +636,10 @@ Expose fee calculation and ETA as API endpoints so Member A's cart can call them
 
 ### Files (Member D)
 ```
-server/services/deliveryFeeService.js    ← implement calculate fully
-server/services/estimationService.js     ← implement estimateTime fully
-server/controllers/deliveryController.js
-server/routes/deliveryRoutes.js
+backend/services/deliveryFeeService.js    ← implement calculate fully
+backend/services/estimationService.js     ← implement estimateTime fully
+backend/controllers/deliveryController.js
+backend/routes/deliveryRoutes.js
 ```
 
 ### API Endpoints
@@ -674,11 +674,11 @@ Admin can see real platform data. All charts and stats populated from Supabase.
 
 ### Files (Member D)
 ```
-server/services/analyticsService.js      ← implement getAnalytics fully
-server/controllers/adminController.js
-server/routes/adminRoutes.js
-client/src/components/admin/StatCard.jsx
-client/src/components/admin/RevenueChart.jsx
+backend/services/analyticsService.js      ← implement getAnalytics fully
+backend/controllers/adminController.js
+backend/routes/adminRoutes.js
+frontend/src/components/admin/StatCard.jsx
+frontend/src/components/admin/RevenueChart.jsx
 ```
 
 ### API Endpoints
@@ -719,13 +719,13 @@ Users add items from multiple restaurants into one cart. Cluster eligibility sho
 
 ### Files (Member A)
 ```
-client/src/context/CartContext.jsx
-client/src/pages/user/Cart.jsx
-client/src/components/user/CartItem.jsx
-client/src/components/user/CartSummary.jsx
-client/src/components/user/ClusterBanner.jsx
-client/src/components/user/ETADisplay.jsx
-client/src/components/user/DeliveryFeeSummary.jsx
+frontend/src/context/CartContext.jsx
+frontend/src/pages/user/Cart.jsx
+frontend/src/components/user/CartItem.jsx
+frontend/src/components/user/CartSummary.jsx
+frontend/src/components/user/ClusterBanner.jsx
+frontend/src/components/user/ETADisplay.jsx
+frontend/src/components/user/DeliveryFeeSummary.jsx
 ```
 
 ### CartContext State Shape
@@ -768,11 +768,11 @@ Convert cart into a confirmed DB order. Track status in real time.
 
 ### Files (Member A)
 ```
-client/src/services/orderService.js
-client/src/pages/user/OrderTracking.jsx
-client/src/hooks/useOrderTracking.js        ← Supabase realtime
-client/src/components/user/StatusTimeline.jsx
-client/src/components/user/RatingModal.jsx
+frontend/src/services/orderService.js
+frontend/src/pages/user/OrderTracking.jsx
+frontend/src/hooks/useOrderTracking.js        ← Supabase realtime
+frontend/src/components/user/StatusTimeline.jsx
+frontend/src/components/user/RatingModal.jsx
 ```
 > `POST /api/orders` is built by Member D (see below). Member A only builds the frontend that calls it.
 
@@ -799,7 +799,7 @@ Riders can update order status (Pickup → On the Way → Delivered) via button 
 
 ### Files (Member B)
 ```
-client/src/components/rider/StatusButtons.jsx
+frontend/src/components/rider/StatusButtons.jsx
 ```
 > The `PUT /api/orders/:id/status` endpoint is built by Member D. Member B only builds the UI that calls it.
 
@@ -824,10 +824,10 @@ After delivery, users rate riders (1–5 stars). Low ratings alert admin.
 
 ### Files (Member B)
 ```
-server/models/ratingModel.js             ← createRiderRating, updateRiderAvg
-server/controllers/ratingController.js
-server/routes/ratingRoutes.js
-client/src/components/rider/RatingDisplay.jsx
+backend/models/ratingModel.js             ← createRiderRating, updateRiderAvg
+backend/controllers/ratingController.js
+backend/routes/ratingRoutes.js
+frontend/src/components/rider/RatingDisplay.jsx
 ```
 
 ### API Endpoints
@@ -855,9 +855,9 @@ Rider's current location is updated periodically so the cluster assignment engin
 
 ### Files (Member B)
 ```
-server/controllers/riderController.js    ← add updateLocation
-client/src/hooks/useRiderLocation.js     ← geolocation + polling hook
-client/src/components/rider/LocationTracker.jsx
+backend/controllers/riderController.js    ← add updateLocation
+frontend/src/hooks/useRiderLocation.js     ← geolocation + polling hook
+frontend/src/components/rider/LocationTracker.jsx
 ```
 
 ### API Endpoints
@@ -887,8 +887,8 @@ Restaurant can accept or reject incoming orders. Accepted orders show a preparat
 
 ### Files (Member C)
 ```
-client/src/components/restaurant/OrderActionButtons.jsx
-client/src/components/restaurant/PrepTimer.jsx
+frontend/src/components/restaurant/OrderActionButtons.jsx
+frontend/src/components/restaurant/PrepTimer.jsx
 ```
 > `PUT /api/orders/:id/status` is Member D's endpoint. Member C only builds the UI buttons that call it.
 
@@ -912,9 +912,9 @@ Restaurant owners can fully manage their menu items.
 
 ### Files (Member C)
 ```
-server/controllers/menuController.js     ← create, update, delete, toggleAvailability
-client/src/components/restaurant/MenuItemForm.jsx
-client/src/components/restaurant/DeleteConfirmModal.jsx
+backend/controllers/menuController.js     ← create, update, delete, toggleAvailability
+frontend/src/components/restaurant/MenuItemForm.jsx
+frontend/src/components/restaurant/DeleteConfirmModal.jsx
 ```
 
 ### API Endpoints
@@ -945,9 +945,9 @@ Customers rate food quality. Restaurants can respond to reviews.
 
 ### Files (Member C)
 ```
-server/models/ratingModel.js             ← updateRestaurantAvg, addResponse, getByRestaurant (add to Member B's model)
-client/src/components/restaurant/ReviewList.jsx
-client/src/components/restaurant/ReviewResponseForm.jsx
+backend/models/ratingModel.js             ← updateRestaurantAvg, addResponse, getByRestaurant (add to Member B's model)
+frontend/src/components/restaurant/ReviewList.jsx
+frontend/src/components/restaurant/ReviewResponseForm.jsx
 ```
 
 ### API Endpoints
@@ -980,10 +980,10 @@ The core `POST /api/orders` endpoint. This is the most critical endpoint in the 
 
 ### Files (Member D)
 ```
-server/models/orderModel.js              ← create, createItems, getById, updateStatus, getByUser
-server/models/clusterModel.js            ← create, getByOrder, assignRider
-server/controllers/orderController.js    ← placeOrder, getById, getByUser, updateStatus
-server/routes/orderRoutes.js
+backend/models/orderModel.js              ← create, createItems, getById, updateStatus, getByUser
+backend/models/clusterModel.js            ← create, getByOrder, assignRider
+backend/controllers/orderController.js    ← placeOrder, getById, getByUser, updateStatus
+backend/routes/orderRoutes.js
 ```
 
 ### API Endpoints
@@ -1020,8 +1020,8 @@ When a restaurant accepts an order, automatically find and assign the nearest av
 
 ### Files (Member D)
 ```
-server/services/riderAssignmentService.js ← implement findBestRider fully
-server/models/riderModel.js               ← getAvailable, setAvailable, updateLocation
+backend/services/riderAssignmentService.js ← implement findBestRider fully
+backend/models/riderModel.js               ← getAvailable, setAvailable, updateLocation
 ```
 
 ### Sprint 3 Acceptance Checklist (Member D — Assignment)
@@ -1059,9 +1059,9 @@ User types a natural language prompt; Gemini builds a complete cart from cluster
 
 ### Files (Member A)
 ```
-client/src/pages/user/ComboBuilder.jsx
-client/src/components/user/ComboResult.jsx
-client/src/services/aiService.js
+frontend/src/pages/user/ComboBuilder.jsx
+frontend/src/components/user/ComboResult.jsx
+frontend/src/services/aiService.js
 ```
 > `POST /api/ai/combo` is built by Member D. Member A only builds the frontend.
 
@@ -1085,7 +1085,7 @@ Three horizontal carousels on Home page: Popular, Frequently Ordered Together, C
 
 ### Files (Member A)
 ```
-client/src/components/user/RecommendationCarousel.jsx
+frontend/src/components/user/RecommendationCarousel.jsx
 ```
 > `/api/recommendations` is built by Member D.
 
@@ -1109,8 +1109,8 @@ Riders are notified when they are near a high-demand zone, prompting them to rep
 
 ### Files (Member B)
 ```
-client/src/components/rider/DemandNotification.jsx
-client/src/hooks/useRiderNotifications.js   ← Supabase realtime on notifications table
+frontend/src/components/rider/DemandNotification.jsx
+frontend/src/hooks/useRiderNotifications.js   ← Supabase realtime on notifications table
 ```
 > `demandService` and `notificationModel` are Member D's. Member B only builds the frontend that reads notifications.
 
@@ -1146,8 +1146,8 @@ Example: ["halal", "spicy"]`;
 
 ### Files (Member C)
 ```
-server/controllers/menuController.js     ← call geminiService.generateMenuTags after save
-client/src/components/restaurant/AiTagBadge.jsx
+backend/controllers/menuController.js     ← call geminiService.generateMenuTags after save
+frontend/src/components/restaurant/AiTagBadge.jsx
 ```
 > `geminiService.generateMenuTags` is Member D's. Member C calls it from the menu controller.
 
@@ -1180,7 +1180,7 @@ Reviews: ${JSON.stringify(reviews.map(r => r.review_text))}`;
 
 ### Files (Member C)
 ```
-server/controllers/restaurantController.js  ← add getVibeSummary
+backend/controllers/restaurantController.js  ← add getVibeSummary
 ```
 > `geminiService.generateVibeSummary` is Member D's.
 
@@ -1203,7 +1203,7 @@ All three Gemini-powered features fully implemented in `geminiService.js`.
 
 ### Files (Member D)
 ```
-server/services/geminiService.js
+backend/services/geminiService.js
 ```
 
 ### `generateMenuTags(name, description)` → `string[]`
@@ -1247,11 +1247,11 @@ Expose Combo Builder and Recommendation endpoints.
 
 ### Files (Member D)
 ```
-server/controllers/aiController.js
-server/routes/aiRoutes.js
-server/services/recommendationService.js  ← implement fully
-server/controllers/recommendationController.js
-server/routes/recommendationRoutes.js
+backend/controllers/aiController.js
+backend/routes/aiRoutes.js
+backend/services/recommendationService.js  ← implement fully
+backend/controllers/recommendationController.js
+backend/routes/recommendationRoutes.js
 ```
 
 ### Recommendation Logic
@@ -1339,7 +1339,7 @@ router.post('/endpoint', protect, restrictTo('user'), controller.method);
 
 ### Supabase Real-Time Hook Pattern
 ```js
-// Reusable hook — create once in client/src/hooks/useRealtimeSubscription.js
+// Reusable hook — create once in frontend/src/hooks/useRealtimeSubscription.js
 export const useRealtimeSubscription = (table, filter, callback) => {
   useEffect(() => {
     const channel = supabase
